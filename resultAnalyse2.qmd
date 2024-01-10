@@ -1,0 +1,82 @@
+---
+title: "Analyse2"
+format: 
+  html:
+    toc: true # table of content
+    echo: false # not see code/chunk
+editor: visual
+---
+
+# Le jeu de données
+
+```{r}
+?quakes
+```
+
+# import des packages
+
+```{r}
+#install.packages("tidyverse", dependencies = TRUE )
+#pak::pkg_sysreqs("tidyverse")
+library(tidyverse)
+library(leaflet)
+```
+
+# aperçu des données
+
+```{r}
+glimpse(quakes)
+
+plot(quakes)
+```
+
+# resumer des données
+
+```{r}
+summary(quakes)
+```
+
+# graphique
+
+```{r}
+graph <- ggplot(quakes) +
+  aes(x = mag, y = stations, color = depth) + # absciss ordo
+  geom_point() + # type de point
+  theme_bw() # theme graphisme, couleur entreprise par ex
+
+ggplotly(graph) # graphe interactif, valeurs qui s'affichent avec souris
+
+ggplot(quakes) +
+  aes(x = mag, y = stations) + # absciss ordo
+  geom_point() + # type de point
+  geom_smooth(method = "lm") + # approximation par regression linéaire
+  theme_bw() # theme graphisme, couleur entreprise par ex
+```
+
+# carte
+
+```{r}
+seismes <- quarkes |>
+  mutate(
+    puissance = case_when(
+      mag <= 4.5 ~ "green",
+      mag <= 5.5 ~ "orange",
+      TRUE ~ "red"
+    )
+  )
+
+leaflet(quakes) |>
+  addTiles() |>
+  addCircleMarkers(
+    lng = ~long, # ~long: toute la colonne long
+    lat = ~lat,
+    label = ~ as.character(mag)
+  )
+
+mean(sqrt(c(1:30)))
+# equivaut à 
+c(1:30) |> # creation du vecteur
+  sqrt() |> # racine carré
+  mean() # calcul moyenne
+# plus lisible
+```
